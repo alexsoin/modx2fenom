@@ -1,0 +1,20 @@
+{
+	"name": "modx2fenom",
+	"version": "0.0.0",
+	"scripts": {
+		"dev": "vite",
+		"build": "vite build",
+		"preview": "vite preview"
+	},
+	"dependencies": {
+		"tailwindcss": "^2.2.19",
+		"vue": "^2.6.14"
+	},
+	"devDependencies": {
+		"autoprefixer": "^10.4.0",
+		"postcss": "^8.4.5",
+		"sass": "^1.45.1",
+		"vite": "^2.7.2",
+		"vite-plugin-vue2": "^1.9.0"
+	}
+}
