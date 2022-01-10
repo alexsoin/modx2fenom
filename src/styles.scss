@@ -1,3 +1,8 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+::selection {
+	@apply text-blue-600;
+	@apply bg-blue-200;
+}
