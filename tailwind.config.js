@@ -4,7 +4,7 @@ module.exports = {
 		"./src/**/*.{vue,js,ts,jsx,tsx}",
 	],
 	purge: [
-		'./src/**/*.html',
-		'./src/**/*.{vue,js,ts,jsx,tsx}',
+		"./index.html",
+		"./src/**/*.{vue,js,ts,jsx,tsx}",
 	],
 }
