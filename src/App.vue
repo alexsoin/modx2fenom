@@ -1,21 +1,19 @@
 <template>
 	<div class="container">
-		<div class="">
-			<h1 class="text-4xl mb-14 flex flex-row gap-3 uppercase justify-center text-gray-700 select-none mt-20 font-bold">
-				<a href="https://zencod.ru/articles/" target="_blank" class="hover:opacity-50 transition-opacity" title="zencod.ru">
-					<img src="/favicon.svg" alt="logo zencod.ru" width="40" height="40">
-				</a>
-				<span>modx<span class="text-gray-800 mx-1">→</span>fenom</span>
+		<div class="mt-8 md:mt-20 mb-14">
+			<h1 class="text-4xl flex flex-row gap-3 uppercase items-center justify-center text-white select-none font-bold">
+				<zencod-link/>
+				<span>modx → fenom</span>
 			</h1>
 		</div>
-		<div class="flex flex-col md:flex-row gap-5 py-3">
-			<div class="w-1/2 ">
+		<div class="flex flex-col md:flex-row gap-12 md:gap-5 py-3">
+			<div class="md:w-1/2">
 				<label class="flex flex-col text-white uppercase">
 					modx:
-					<textarea v-model="valModx" cols="30" rows="10" spellcheck="false" class="mt-2 p-2 bg-blue-400 border-2 border-blue-300 text-gray-800 rounded"></textarea>
+					<textarea v-model="inputTag" cols="30" rows="10" spellcheck="false" class="mt-2 p-2 bg-blue-400 border-2 border-blue-300 text-gray-800 rounded"></textarea>
 				</label>
 			</div>
-			<div class="w-1/2 relative">
+			<div class="md:w-1/2 relative">
 				<label class="flex flex-col text-white uppercase">
 				<span class="flex flex-row gap-4 justify-between items-end">
 					fenom: <span v-if="tag.templateTag" class="text-xs text-gray-100 lowercase font-light">({{ tag.templateTag.name }})</span>
@@ -39,23 +37,23 @@
 			<div class="bg-gray-100">
 				<div class="w-full bg-gray-200 p-4">DEBUG MENU:</div>
 				<div class="flex flex-row flex-wrap gap-4 p-4">
-					<button @click="valModx = `[[++configTest]]`" class="bg-yellow-500 hover:bg-yellow-400 text-white font-bold px-8 py-2">config</button>
-					<button @click="valModx = `[[+placeholderTest]]`" class="bg-yellow-500 hover:bg-yellow-400 text-white font-bold px-8 py-2">placeholder</button>
-					<button @click="valModx = `[[~urlTest]]`" class="bg-yellow-500 hover:bg-yellow-400 text-white font-bold px-8 py-2">url</button>
-					<button @click="valModx = `[[$chunkTest]]`" class="bg-yellow-500 hover:bg-yellow-400 text-white font-bold px-8 py-2">chunk</button>
-					<button @click="valModx = `[[%lexiconTest]]`" class="bg-yellow-500 hover:bg-yellow-400 text-white font-bold px-8 py-2">lexicon</button>
-					<button @click="valModx = `[[snippetTest]]`" class="bg-yellow-500 hover:bg-yellow-400 text-white font-bold px-8 py-2">snippet</button>
-					<button @click="valModx = `[[!snippetTest]]`" class="bg-yellow-500 hover:bg-yellow-400 text-white font-bold px-8 py-2">!snippet</button>
-					<button @click="valModx = `[[*resource]]`" class="bg-yellow-500 hover:bg-yellow-400 text-white font-bold px-8 py-2">resource</button>
+					<button @click="inputTag = `[[++configTest]]`" class="bg-yellow-500 hover:bg-yellow-400 text-white font-bold px-8 py-2">config</button>
+					<button @click="inputTag = `[[+placeholderTest]]`" class="bg-yellow-500 hover:bg-yellow-400 text-white font-bold px-8 py-2">placeholder</button>
+					<button @click="inputTag = `[[~urlTest]]`" class="bg-yellow-500 hover:bg-yellow-400 text-white font-bold px-8 py-2">url</button>
+					<button @click="inputTag = `[[$chunkTest]]`" class="bg-yellow-500 hover:bg-yellow-400 text-white font-bold px-8 py-2">chunk</button>
+					<button @click="inputTag = `[[%lexiconTest]]`" class="bg-yellow-500 hover:bg-yellow-400 text-white font-bold px-8 py-2">lexicon</button>
+					<button @click="inputTag = `[[snippetTest]]`" class="bg-yellow-500 hover:bg-yellow-400 text-white font-bold px-8 py-2">snippet</button>
+					<button @click="inputTag = `[[!snippetTest]]`" class="bg-yellow-500 hover:bg-yellow-400 text-white font-bold px-8 py-2">!snippet</button>
+					<button @click="inputTag = `[[*resource]]`" class="bg-yellow-500 hover:bg-yellow-400 text-white font-bold px-8 py-2">resource</button>
 				</div>
 				<div class="flex flex-row flex-wrap gap-4 p-4">
-					<button @click="valModx = valModx.replace(']]','@priset]]')" class="bg-pink-500 hover:bg-pink-400 text-white font-bold px-8 py-2">+ @priset</button>
-					<button @click="valModx = valModx.replace(']]', ':default:modName]]')" class="bg-pink-500 hover:bg-pink-400 text-white font-bold px-8 py-2">+ :modifier</button>
-					<button @click="valModx = valModx.replace('[[','[[-')" class="bg-pink-500 hover:bg-pink-400 text-white font-bold px-8 py-2">+ -comment</button>
-					<button @click="valModx = valModx.replace(']]','? &param=`value`]]')" class="bg-pink-500 hover:bg-pink-400 text-white font-bold px-8 py-2">+ ?params</button>
+					<button @click="inputTag = inputTag.replace(']]','@priset]]')" class="bg-pink-500 hover:bg-pink-400 text-white font-bold px-8 py-2">+ @priset</button>
+					<button @click="inputTag = inputTag.replace(']]', ':default:modName]]')" class="bg-pink-500 hover:bg-pink-400 text-white font-bold px-8 py-2">+ :modifier</button>
+					<button @click="inputTag = inputTag.replace('[[','[[-')" class="bg-pink-500 hover:bg-pink-400 text-white font-bold px-8 py-2">+ -comment</button>
+					<button @click="inputTag = inputTag.replace(']]','? &param=`value`]]')" class="bg-pink-500 hover:bg-pink-400 text-white font-bold px-8 py-2">+ ?params</button>
 				</div>
 				<div class="flex flex-row flex-wrap gap-4 p-4">
-					<button @click="valModx = valModx = `[[!MySnippet@myPropSet:filter1:default=\`test123\`? &prop1=\`x\` &prop2=\`y\`]]`" class="bg-green-600 hover:bg-green-500 text-white font-bold px-8 py-2">combo-tag #1</button>
+					<button @click="inputTag = `[[!MySnippet@myPropSet:filter1:default=\`test123\`? &prop1=\`x\` &prop2=\`y\`]]`" class="bg-green-600 hover:bg-green-500 text-white font-bold px-8 py-2">combo-tag #1</button>
 				</div>
 			</div>
 			<div class="bg-gray-100 mt-10">
@@ -73,12 +71,15 @@
 <script>
 import templates from "./templates";
 import modifiersList from "./modifiers.list";
+import zencodLink from "./components/ZencodLink.vue";
 
 export default {
+	components: {
+		zencodLink,
+	},
 	data: function () {
 		return {
-			valModx: '[[!pdoResources?\n\t&parents=`1`\n\t&depth=`0`\n\t&tpl=`ListRowTpl`\n\t&tplWrapper=`@INLINE [[+output]]`\n\t&includeTVs=`image`\n]]',
-			valFenom: '',
+			inputTag: '[[!pdoResources?\n\t&parents=`1`\n\t&depth=`0`\n\t&tpl=`ListRowTpl`\n\t&tplWrapper=`@INLINE [[+output]]`\n\t&includeTVs=`image`\n]]',
 			showDebug: false,
 			tag: {},
 			errors: [],
@@ -86,11 +87,11 @@ export default {
 		}
 	},
 	created() {
-		this.setValFenom();
+		this.convertTag();
 	},
 	watch: {
-		valModx() {
-			this.setValFenom();
+		inputTag() {
+			this.convertTag();
 		}
 	},
 	methods: {
@@ -120,8 +121,8 @@ export default {
 				.then(() => this.$toast.success(`Скопировано: \n${value}`))
 				.catch((e) => this.$toast.error(e.message));
 		},
-		setValFenom() {
-			const baseMatch = this.getMatch(this.valModx, /^\[\[((?:.|\n)*?)]]$/g);
+		convertTag() {
+			const baseMatch = this.getMatch(this.inputTag, /^\[\[((?:.|\n)*?)]]$/g);
 
 			this.clearAll();
 
