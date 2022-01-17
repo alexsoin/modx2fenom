@@ -54,6 +54,7 @@
 				</div>
 				<div class="flex flex-row flex-wrap gap-4 p-4">
 					<button @click="inputTag = `[[!MySnippet@myPropSet:filter1:default=\`test123\`? &prop1=\`x\` &prop2=\`y\`]]`" class="bg-green-600 hover:bg-green-500 text-white font-bold px-8 py-2">combo-tag #1</button>
+					<button @click="inputTag = `[[!MySnippet@myPropSet:default=\`test123\`?\n\t&prop1=\`x\`\n\t&prop2=\`y\`\n\t&clearProp1=\`\`\n\t&clearProp2=\`\`\n]]`" class="bg-green-600 hover:bg-green-500 text-white font-bold px-8 py-2">combo-tag #2</button>
 				</div>
 			</div>
 			<div class="bg-gray-100 mt-10">
@@ -166,15 +167,15 @@ export default {
 				const arrParams = paramsTag.replaceAll("\n", trimSymbol).trim().replaceAll("` &", `\`${trimSymbol}&`).split(trimSymbol);
 
 				const strParams = arrParams.map(i => {
-					const match = this.getMatch(i, /&(.*?)=`(.*?)`/g);
+					const match = this.getMatch(i, /&(.*?)=`(.*?)?`/g);
 
 					if(!match) return;
 
 					const [, key, value ] = match;
 
-					if(!key || !value) return false;
+					if(!key) return false;
 
-					return `"${key}" => "${value}"`
+					return `'${key}' => '${value || ""}'`
 				}).filter(i => i).join(",\n\t") || "";
 
 				if(strParams) {
