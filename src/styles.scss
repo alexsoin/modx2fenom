@@ -11,6 +11,9 @@
 
 body {
 	font-family: 'Montserrat', sans-serif;
+	background-image: url("data:image/svg+xml,%3Csvg width='1440' height='715' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath fill='url(%23paint0_linear_387_29668)' d='M0 0h1440v715H0z'/%3E%3Cdefs%3E%3ClinearGradient id='paint0_linear_387_29668' x1='0' y1='0' x2='242.65' y2='574.73' gradientUnits='userSpaceOnUse'%3E%3Cstop stop-color='%23223C6A'/%3E%3Cstop offset='1' stop-color='%230F1725' stop-opacity='0'/%3E%3C/linearGradient%3E%3C/defs%3E%3C/svg%3E");
+	background-size: cover;
+	background-position: left top;
 }
 
 code {
