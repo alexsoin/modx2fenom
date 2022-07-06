@@ -192,7 +192,8 @@ export default {
 	computed: {
 		keymap () {
 			return {
-				'ctrl+esc': this.toggleDebug,
+				'ctrl+d': this.toggleDebug,
+				'ctrl+в': this.toggleDebug,
 			}
 		}
 	},
