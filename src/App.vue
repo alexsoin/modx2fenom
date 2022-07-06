@@ -119,7 +119,7 @@ export default {
 		},
 		copy: function (value) {
 			this.$copyText(value)
-				.then(() => this.$toast.success(`Скопировано: \n${value}`))
+				.then(() => this.$toast.success(`Скопировано`))
 				.catch((e) => this.$toast.error(e.message));
 		},
 		convertTag() {
