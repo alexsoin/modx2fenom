@@ -10,9 +10,9 @@ export default defineConfig({
 	build: {
 		rollupOptions: {
 			output: {
-				entryFileNames: `assets/teplica-calc/[name].js`,
-				chunkFileNames: `assets/teplica-calc/[name].js`,
-				assetFileNames: `assets/teplica-calc/[name].[ext]`
+				entryFileNames: `assets/[name].js`,
+				chunkFileNames: `assets/[name].js`,
+				assetFileNames: `assets/[name].[ext]`
 			}
 		}
 	}
