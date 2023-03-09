@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import langs from "@/data/lang";
-import { ref, watch } from "vue";
+import { ref, watch, computed } from "vue";
 
 const props = defineProps<{
 	modifiers: string,
@@ -10,14 +10,14 @@ const props = defineProps<{
 
 const errors = ref<Array<string>>([]);
 const infos = ref<Array<string>>([]);
-const lang = ref(langs[props.langNow]);
+const lang =	computed(() => langs[props.langNow]);
 
 const setArgs = (str: string, args: Array<string>) => str.replace(/{(\d+)}/g, (match: string, number: number) => typeof args[number] !== "undefined" ? args[number] : match);
 
-
-watch(() => props.modifiers || props.property, () => {
+const checkData = () => {
 	errors.value = [];
 	infos.value = [];
+
 	if(props.modifiers) {
 		props.modifiers.split(":").filter(i => i).forEach(modifier => {
 			const modifierInfo = lang.value.info.modifier.find(i => modifier.indexOf(i.name) >= 0) || { name: "", message: ""};
@@ -29,10 +29,15 @@ watch(() => props.modifiers || props.property, () => {
 			errors.value.push(setArgs(lang.value.error.modifier, [modifier.trim()]));
 		});
 	}
+
 	if(props.property) {
 		errors.value.push(setArgs(lang.value.error.property, [props.property.trim()]));
 	}
-});
+};
+
+watch(() => props.modifiers, checkData);
+watch(() => props.property, checkData);
+watch(lang, checkData);
 </script>
 
 <template>

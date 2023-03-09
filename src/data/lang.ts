@@ -1,6 +1,7 @@
 export default {
 	ru: {
 		desc: "Конвертер modx тегов в синтаксис fenom.",
+		copied: "Скопировано",
 		error: {
 			error: "Ошибка!",
 			undefinedValue: "Не разберу, что вы ввели :(",
@@ -17,6 +18,7 @@ export default {
 	},
 	en: {
 		desc: "Converter modx tags to fenom syntax.",
+		copied: "Copied",
 		error: {
 			error: "Error!",
 			undefinedValue: "I don't understand what you entered. :(",

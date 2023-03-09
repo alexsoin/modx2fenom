@@ -20,7 +20,7 @@ const inputText = computed({
 			cols="30"
 			rows="10"
 			spellcheck="false"
-			class="mt-2 p-2 bg-gray-600 bg-opacity-40 border-2 border-gray-200 shadow-lg text-gray-100 rounded"
+			class="mt-2 p-2 bg-blue-900 border border-white shadow-lg rounded focus:outline-none focus:ring focus:ring-blue-700"
 		/>
 	</label>
 </template>

@@ -26,7 +26,7 @@ const copy = async (str: string) => {
 			fenom:
 			<span
 				v-if="fenomOut.fenom?.template"
-				class="text-xs text-gray-100 lowercase font-light"
+				class="text-xs text-white lowercase font-normal"
 			>
 				({{ fenomOut.fenom?.template.name }})
 			</span>
@@ -35,12 +35,12 @@ const copy = async (str: string) => {
 			:value="fenomOut.out"
 			cols="30"
 			rows="10"
-			class="mt-2 p-2 bg-gray-600 bg-opacity-40 border-2 border-gray-200 shadow-lg text-gray-100 rounded"
+			class="mt-2 p-2 bg-blue-900 border border-white shadow-lg rounded"
 			disabled
 		/>
 	</label>
 	<button
-		class="absolute bottom-1 right-2 flex flex-1 gap-2 justify-center p-2 rounded transition-opacity bg-gray-700 text-white mb-2 opacity-30 hover:opacity-100"
+		class="absolute bottom-1 right-2 flex flex-1 gap-2 justify-center p-2 rounded transition-opacity bg-gray-700 text-white mb-2 opacity-30 hover:opacity-100 hover:bg-gray-200 hover:text-gray-700"
 		title="скопировать результат"
 		@click="() => copy(fenomOut.out)"
 	>
