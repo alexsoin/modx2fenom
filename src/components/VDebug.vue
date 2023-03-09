@@ -1,11 +1,11 @@
 <script setup lang="ts">
 import { computed } from "vue";
-import { TagFenom } from "@/types";
-import debug from "@/debug";
+import { DataFenom } from "@/data/types";
+import debug from "@/data/debug";
 
 const props = defineProps<{
 	inputTag: string,
-	tag: TagFenom,
+	tag: DataFenom,
 }>();
 const emit = defineEmits(["update:inputTag"]);
 

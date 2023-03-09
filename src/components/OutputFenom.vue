@@ -1,10 +1,10 @@
 <script setup lang="ts">
 import useClipboard from "vue-clipboard3";
 import { Notify } from "notiflix/build/notiflix-notify-aio";
-import { TagFenom } from "@/types";
+import { DataFenom } from "@/data/types";
 
 defineProps<{
-	fenomOut: TagFenom,
+	fenomOut: DataFenom,
 }>();
 
 const { toClipboard } = useClipboard();
@@ -25,14 +25,14 @@ const copy = async (str: string) => {
 		<span class="flex flex-row gap-4 justify-between items-end">
 			fenom:
 			<span
-				v-if="fenomOut.templateTag"
+				v-if="fenomOut.fenom?.template"
 				class="text-xs text-gray-100 lowercase font-light"
 			>
-				({{ fenomOut.templateTag.name }})
+				({{ fenomOut.fenom?.template.name }})
 			</span>
 		</span>
 		<textarea
-			:value="fenomOut.result"
+			:value="fenomOut.out"
 			cols="30"
 			rows="10"
 			class="mt-2 p-2 bg-gray-600 bg-opacity-40 border-2 border-gray-200 shadow-lg text-gray-100 rounded"
@@ -42,7 +42,7 @@ const copy = async (str: string) => {
 	<button
 		class="absolute bottom-1 right-2 flex flex-1 gap-2 justify-center p-2 rounded transition-opacity bg-gray-700 text-white mb-2 opacity-30 hover:opacity-100"
 		title="скопировать результат"
-		@click="() => copy(fenomOut.result)"
+		@click="() => copy(fenomOut.out)"
 	>
 		<svg
 			class="fill-current"

@@ -6,7 +6,7 @@ export default {
 			undefinedValue: "Не разберу, что вы ввели :(",
 			emptyTemplate: "Не найден шаблон для введенного тега",
 			modifier: `В теге присутствует фильтр или модификатор <code>:{0}</code> для перевода его в синтаксис fenom воспользуйтесь <a href="https://docs.modx.pro/komponentyi/pdotools/parser#%D0%A8%D0%B0%D0%B1%D0%BB%D0%BE%D0%BD%D0%B8%D0%B7%D0%B0%D1%82%D0%BE%D1%80-Fenom" target="_blank">справочником</a>`,
-			property: `В теге присутствует набор свойств <code>@{0}</code> для перевода его в синтаксис fenom воспользуйтесь <a href="https://docs.modx.pro/komponentyi/pdotools/parser#%D0%A8%D0%B0%D0%B1%D0%BB%D0%BE%D0%BD%D0%B8%D0%B7%D0%B0%D1%82%D0%BE%D1%80-Fenom" target="_blank">справочником</a>`,
+			property: `В теге присутствует набор свойств <code>{0}</code> для перевода его в синтаксис fenom воспользуйтесь <a href="https://docs.modx.pro/komponentyi/pdotools/parser#%D0%A8%D0%B0%D0%B1%D0%BB%D0%BE%D0%BD%D0%B8%D0%B7%D0%B0%D1%82%D0%BE%D1%80-Fenom" target="_blank">справочником</a>`,
 		},
 		info: {
 			modifier: [
@@ -22,7 +22,7 @@ export default {
 			undefinedValue: "I don't understand what you entered. :(",
 			emptyTemplate: "Template not found for the entered tag",
 			modifier: `The tag contains a filter or modifier <code>:{0}</code> to translate it into fenom syntax, use <a href="https://docs.modx.pro/komponentyi/pdotools/parser#%D0%A8% D0%B0%D0%B1%D0%BB%D0%BE%D0%BD%D0%B8%D0%B7%D0%B0%D1%82%D0%BE%D1%80-Fenom" target="_blank ">guide</a>`,
-			property: `The tag has a set of properties <code>@{0}</code> to translate it into fenom syntax, use <a href="https://docs.modx.pro/komponentyi/pdotools/parser#%D0%A8%D0 %B0%D0%B1%D0%BB%D0%BE%D0%BD%D0%B8%D0%B7%D0%B0%D1%82%D0%BE%D1%80-Fenom" target="_blank" >guide</a>`,
+			property: `The tag has a set of properties <code>{0}</code> to translate it into fenom syntax, use <a href="https://docs.modx.pro/komponentyi/pdotools/parser#%D0%A8%D0 %B0%D0%B1%D0%BB%D0%BE%D0%BD%D0%B8%D0%B7%D0%B0%D1%82%D0%BE%D1%80-Fenom" target="_blank" >guide</a>`,
 		},
 		info: {
 			modifier: [

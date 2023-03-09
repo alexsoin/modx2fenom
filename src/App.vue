@@ -2,14 +2,15 @@
 import { ref, reactive, watch, onMounted, computed } from "vue";
 import useHotkey, { HotKey } from "vue3-hotkey";
 import { Notify } from "notiflix/build/notiflix-notify-aio";
-import templates from "@/templates";
+import templates from "@/data/templates";
 import ZencodLink from "@/components/ZencodLink.vue";
-import { TagFenom } from "@/types";
+import { DataFenom } from "@/data/types";
 import InputModx from "@/components/InputModx.vue";
 import OutputFenom from "@/components/OutputFenom.vue";
 import VDebug from "@/components/VDebug.vue";
 import VLang from "@/components/VLang.vue";
-import langs from "@/lang";
+import AppInfo from "@/components/AppInfo.vue";
+import langs from "@/data/lang";
 
 Notify.init({ position: "center-top" });
 
@@ -17,19 +18,15 @@ const langNow = ref<"ru"|"en">("ru");
 const lang = computed(() => langs[langNow.value] || langs.ru);
 const inputTag = ref("");
 const showDebug = ref(false);
-const tag = reactive<TagFenom>({
-	nameTag: "",
-	nameTagPre: "",
-	modifierTag: "",
-	propertyTag: "",
-	flagTag: "",
-	tokenTag: "",
-	isLetterTag: false,
-	templateTag: false,
-	nameNow: "",
-	paramsTag: "",
-	resultParams: "",
-	result: "",
+const dataFenom = reactive<DataFenom>({
+	raw: "",
+	out: "",
+	name: "",
+	modifier: "",
+	property: "",
+	params: [],
+	fenom: null,
+	modx: null,
 });
 const errors = ref<Array<string>>([]);
 const infos = ref<Array<string>>([]);
@@ -45,96 +42,62 @@ const hotkeys = ref<HotKey[]>([
 ]);
 useHotkey(hotkeys.value);
 
-const setArgs = (str: string, args: Array<string>) => str.replace(/{(\d+)}/g, (match: string, number: number) => typeof args[number] !== "undefined" ? args[number] : match);
-
 const clearAll = () => {
 	errors.value = [];
 	infos.value = [];
 
-	tag.nameTag = "";
-	tag.nameTagPre = "";
-	tag.modifierTag = "";
-	tag.propertyTag = "";
-	tag.flagTag = "";
-	tag.tokenTag = "";
-	tag.isLetterTag = false;
-	tag.templateTag = false;
-	tag.nameNow = "";
-	tag.paramsTag = "";
-	tag.resultParams = "";
-	tag.result = "";
+	dataFenom.raw = "";
+	dataFenom.out = "";
+	dataFenom.name = "";
+	dataFenom.modifier = "";
+	dataFenom.property = "";
+	dataFenom.params = [];
+	dataFenom.fenom = null;
+	dataFenom.modx = null;
 };
 
-const getMatch = (str: string, reg: RegExp) => Array.from(str.matchAll(reg))[0] || [];
+const getMatch = (str: string, reg: RegExp) => Array.from(str.trim().replace(/[\r\n\t]+/g, "").matchAll(reg))[0] || [];
 
 const convertTag = () => {
-	const baseMatch = getMatch(inputTag.value, /[\[]{2}(([!])?.*)[\]]{2}/sg);
+	const [ tagRaw, tagContent, flagNoCache ] = getMatch(inputTag.value, /^[\[]{2}(([!])?.*)[\]]{2}$/sg);
 	clearAll();
 
-	if(baseMatch.length === 0) {
-		tag.result = lang.value.error.undefinedValue;
+	if(!tagContent) {
+		dataFenom.out = lang.value.error.undefinedValue;
 		return;
 	}
 
-	const [ nameTagPre, paramsTag ] = baseMatch[1].split("?");
-	const modifierTag = nameTagPre.indexOf(":") >= 0 && nameTagPre.substring(nameTagPre.indexOf(":") + 1) || "";
-	const propertyTag = nameTagPre.indexOf("@") >= 0 && nameTagPre.replace(`:${modifierTag}`, "").substring(nameTagPre.replace(`:${modifierTag}`, "").indexOf("@") + 1) || "";
+	const [ preParams, rawParams ] = tagContent.split("?");
+	const [ , modxTagKey, tagName, tagProperty, tagModifiers ] = getMatch(preParams, /[!]?([-*$~%]?|[+]{1,2})?([-_a-zA-Z0-9\\.]*)(@[-_a-zA-Z0-9\\.]*)?(:.*)?/gs);
 
-	const nameTag = nameTagPre.replace(`:${modifierTag}`, "").replace(`@${propertyTag}`, "").trim();
+	const templateTag = templates.find(i => i.token === modxTagKey) || (!!tagName && templates.find(i => i.name === "snippet") );
 
-	if(modifierTag) {
-		modifierTag.split(":").forEach(modifier => {
-			const modifierInfo = lang.value.info.modifier.find(i => modifier.indexOf(i.name) >= 0);
+	const paramsArr = Array.from((rawParams || "").matchAll(/(&(.*?)[ ]{0,}=[ ]{0,}`(.*?)`)/sg))
+		.map(i => ({ name: i[2], value: i[3] }))
+		.filter(i => i.name) || [];
+	const paramsFenom = paramsArr
+		.map(i => `'${i.name}' => '${i.value || ""}'`)
+		.join(",\n\t");
+	const paramsFenomOut = paramsFenom ? ` : [\n\t${paramsFenom}\n]` : "";
 
-			if(modifierInfo) {
-				infos.value.push(modifierInfo.message);
-			}
+	const result = templateTag
+		? templateTag.template.replaceAll("#NAME#", `${flagNoCache || ""}${tagName}`).replaceAll("#PARAMS#", paramsFenomOut || "")
+		: lang.value.error.error;
 
-			errors.value.push(setArgs(lang.value.error.modifier, [modifier.trim()]));
-		});
-	}
-
-	if(propertyTag) {
-		errors.value.push(setArgs(lang.value.error.property, [propertyTag.trim()]));
-	}
-
-	const [ tokenTag, flagTag ] = getMatch(nameTag, /([!])?([-*$~%!]?|[+]{1,2})?/g);
-
-	const isLetterTag = getMatch(nameTag.replace(tokenTag, ""), /^[a-zA-Z]/gu).length > 0;
-	const templateTag = templates.find(i => i.token === tokenTag) || (isLetterTag && templates.find(i => i.name === "snippet") );
-	const nameNow = nameTag.replace(tokenTag, "");
-
-	let resultParams = "";
-
-	if(paramsTag) {
-		const params = Array.from(paramsTag.matchAll(/(&(.*?)[ ]{0,}=[ ]{0,}`(.*?)`)/sg))
-			.map(i => ({ name: i[2], value: i[3] }))
-			.filter(i => i.name);
-
-		const strParams = params
-			.map(i => `'${i.name}' => '${i.value || ""}'`)
-			.filter(i => i)
-			.join(",\n\t") || "";
-
-		if(strParams) {
-			resultParams = ` : [\n\t${strParams}\n]`;
-		}
-	}
-
-	const result = templateTag && templateTag.template.replaceAll("#NAME#", `${flagTag || ""}${nameNow}`).replaceAll("#PARAMS#", resultParams || "") || lang.value.error.error;
-
-	tag.nameTag = nameTag;
-	tag.nameTagPre = nameTagPre;
-	tag.modifierTag = modifierTag;
-	tag.propertyTag = propertyTag;
-	tag.flagTag = flagTag;
-	tag.tokenTag = tokenTag;
-	tag.isLetterTag = isLetterTag;
-	tag.templateTag = templateTag;
-	tag.nameNow = nameNow;
-	tag.paramsTag = paramsTag;
-	tag.resultParams = resultParams;
-	tag.result = result;
+	dataFenom.raw = tagRaw;
+	dataFenom.out = result;
+	dataFenom.name = tagName;
+	dataFenom.modifier = tagModifiers;
+	dataFenom.property = tagProperty;
+	dataFenom.params = paramsArr;
+	dataFenom.fenom = {
+		flagNoCache: flagNoCache,
+		template: templateTag,
+	};
+	dataFenom.modx = {
+		key: modxTagKey,
+		params: rawParams,
+	};
 
 	if(!templateTag) Notify.failure(lang.value.error.emptyTemplate);
 };
@@ -159,35 +122,18 @@ watch(inputTag, () => convertTag());
 				<input-modx v-model="inputTag" />
 			</div>
 			<div class="flex-1 relative">
-				<output-fenom :fenom-out="tag" />
+				<output-fenom :fenom-out="dataFenom" />
 			</div>
 		</div>
-		<div
-			v-if="infos.length > 0"
-			class="mt-2 bg-green-500 p-2 rounded flex flex-col gap-2 content-links text-sm"
-		>
-			<div
-				v-for="info in infos"
-				:key="info"
-				class="bg-green-400 px-4 py-2 rounded"
-				v-html="info"
-			/>
-		</div>
-		<div
-			v-if="errors.length > 0"
-			class="mt-2 bg-red-500 p-2 text-white rounded flex flex-col gap-2 content-links text-sm"
-		>
-			<div
-				v-for="error in errors"
-				:key="error"
-				class="bg-red-400 px-4 py-2 rounded"
-				v-html="error"
-			/>
-		</div>
+		<app-info
+			:property="dataFenom.property"
+			:modifiers="dataFenom.modifier"
+			:lang-now="langNow"
+		/>
 		<v-debug
 			v-if="showDebug"
 			v-model:inputTag="inputTag"
-			:tag="tag"
+			:tag="dataFenom"
 		/>
 		<div class="flex flex-col gap-5 justify-center items-center text-blue-300 text-center mt-8 mb-20">
 			<div class="">

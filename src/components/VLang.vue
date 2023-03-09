@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed, onMounted } from "vue";
-import lang from "@/lang";
+import lang from "@/data/lang";
 
 const props = defineProps<{
 	modelValue: string,
