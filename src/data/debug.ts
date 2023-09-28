@@ -9,7 +9,8 @@ export default [
 			{ name: "lexicon", cell: "", value: "[[%lexiconTest]]" },
 			{ name: "snippet", cell: "", value: "[[snippetTest]]" },
 			{ name: "!snippet", cell: "", value: "[[!snippetTest]]" },
-			{ name: "resource", cell: "", value: "[[*resource]]" },
+			{ name: "resource", cell: "", value: "[[*resourceTest]]" },
+			{ name: "comment", cell: "", value: "[[-commentTest]]" },
 		]
 	},
 	{
@@ -24,7 +25,7 @@ export default [
 	{
 		name: "combo",
 		events: [
-			{ name: "combo-tag #1", cell: "", value: `[[!MySnippet@myPropSet:filter1:default=\`test123\`? &prop1=\`x\` &prop2=\`y\`]]` },
+			{ name: "combo-tag #1", cell: "", value: `[[!MySnippet@myPropSet:filter1:default=\`test123\`? &prop1=\`x\` &prop2=\`y\` &prop3=\`111\`]]` },
 			{ name: "combo-tag #2", cell: "", value: `[[!MySnippet@myPropSet:default=\`test123\`?\n\t&prop1=\`x\`\n\t&prop2=\`y\`\n\t&clearProp1=\`\`\n\t&clearProp2=\`\`\n]]` },
 			{ name: "combo-tag #3", cell: "", value: "[[!pdoResources?&parents=`1`&depth=`0`&tpl=`ListRowTpl`&tplWrapper=`@INLINE [[+output]]`&includeTVs=`image`]]" },
 		]

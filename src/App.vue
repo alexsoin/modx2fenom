@@ -11,6 +11,7 @@ import VDebug from "@/components/VDebug.vue";
 import VLang from "@/components/VLang.vue";
 import AppInfo from "@/components/AppInfo.vue";
 import langs from "@/data/lang";
+import converter from "@/composables/converter";
 
 Notify.init({ position: "center-top" });
 
@@ -33,7 +34,7 @@ const infos = ref<Array<string>>([]);
 
 const hotkeys = ref<HotKey[]>([
 	{
-		keys: ["ctrl", "d"],
+		keys: ["ctrl", "alt", "d"],
 		preventDefault: true,
 		handler() {
 			showDebug.value = !showDebug.value;
@@ -72,8 +73,8 @@ const convertTag = () => {
 
 	const templateTag = templates.find(i => i.token === modxTagKey) || (!!tagName && templates.find(i => i.name === "snippet") );
 
-	const paramsArr = Array.from((rawParams || "").matchAll(/(&(.*?)[ ]{0,}=[ ]{0,}`(.*?)`)/sg))
-		.map(i => ({ name: i[2], value: i[3] }))
+	const paramsArr = Array.from((rawParams || "").matchAll(/&(\w+)=`([^`]*)`/sg))
+		.map(i => ({ name: i[1], value: i[2] }))
 		.filter(i => i.name) || [];
 	const paramsFenom = paramsArr
 		.map(i => `'${i.name}' => '${i.value || ""}'`)
@@ -81,11 +82,13 @@ const convertTag = () => {
 	const paramsFenomOut = paramsFenom ? ` : [\n\t${paramsFenom}\n]` : "";
 
 	const result = templateTag
-		? templateTag.template.replaceAll("#NAME#", `${flagNoCache || ""}${tagName}`).replaceAll("#PARAMS#", paramsFenomOut || "")
+		? templateTag.template
+			.replaceAll("#NAME#", `${flagNoCache || ""}${tagName}`)
+			.replaceAll("#PARAMS#", paramsFenomOut || "")
 		: lang.value.error.error;
 
 	dataFenom.raw = tagRaw;
-	dataFenom.out = result;
+	dataFenom.out = converter(result);
 	dataFenom.name = tagName;
 	dataFenom.modifier = tagModifiers;
 	dataFenom.property = tagProperty;
