@@ -73,7 +73,7 @@ const convertTag = () => {
 
 	const templateTag = templates.find(i => i.token === modxTagKey) || (!!tagName && templates.find(i => i.name === "snippet") );
 
-	const paramsArr = rawParams.trim().replace(/`[\s]+&/g, "`&").split("&").map(i => i.split(/([^=\s]+)=`(.*)`$/g))
+	const paramsArr = (rawParams || "").trim().replace(/`[\s]+&/g, "`&").split("&").map(i => i.split(/([^=\s]+)=`(.*)`$/g))
 		.map(i => ({ name: i[1], value: i[2] }))
 		.filter(i => i.name) || [];
 	const paramsFenom = paramsArr
