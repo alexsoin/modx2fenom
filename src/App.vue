@@ -15,7 +15,7 @@ import converter from "@/composables/converter";
 
 Notify.init({ position: "center-top" });
 
-const langNow = ref<"ru"|"en">("ru");
+const langNow = ref<"ru" | "en">("ru");
 const lang = computed(() => langs[langNow.value] || langs.ru);
 const inputTag = ref("");
 const showDebug = ref(false);
@@ -38,7 +38,7 @@ const hotkeys = ref<HotKey[]>([
 		preventDefault: true,
 		handler() {
 			showDebug.value = !showDebug.value;
-		}
+		},
 	},
 ]);
 useHotkey(hotkeys.value);
@@ -73,8 +73,12 @@ const convertTag = () => {
 
 	const templateTag = templates.find(i => i.token === modxTagKey) || (!!tagName && templates.find(i => i.name === "snippet") );
 
-	const paramsArr = (rawParams || "").trim().replace(/`[\s]+&/g, "`&").split("&").map(i => i.split(/([^=\s]+)=`(.*)`$/g))
-		.map(i => ({ name: i[1], value: i[2] }))
+	console.log((rawParams || "").trim().replace(/\s+/g, " ").replace(/`[\s]+&/g, "`&").replace(/[\s]?=[\s]?`/g, "=`"));
+
+
+	const paramsArr = (rawParams || "").trim().replace(/\s+/g, " ").replace(/`[\s]+&/g, "`&").replace(/[\s]?=[\s]?`/g, "=`").split("&")
+		.map(i => i.split(/([^=\s]+)=`(.*)`$/g))
+		.map(i => ({ name: i[1], value: i[2]?.trim() }))
 		.filter(i => i.name) || [];
 	const paramsFenom = paramsArr
 		.map(i => `'${i.name}' => '${i.value || ""}'`)
@@ -150,12 +154,14 @@ watch(inputTag, () => convertTag());
 				class="hover:opacity-90"
 				target="_blank"
 				title="репозиторий проекта"
-			><img
-				src="https://github.githubassets.com/favicons/favicon.svg"
-				height="20"
-				width="20"
-				alt="github"
-			></a>
+			>
+				<img
+					src="https://github.githubassets.com/favicons/favicon.svg"
+					height="20"
+					width="20"
+					alt="github"
+				>
+			</a>
 		</div>
 	</div>
 </template>
