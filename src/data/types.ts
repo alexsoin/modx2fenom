@@ -10,11 +10,11 @@ type DataFenom = {
 	}[],
 	fenom: {
 		flagNoCache: string,
-		template: {
+		template?: {
 			name: string;
 			token: string|boolean;
 			template: string;
-		} | false | undefined,
+		},
 	} | null,
 	modx: {
 		key: string,

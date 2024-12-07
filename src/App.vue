@@ -99,7 +99,7 @@ const convertTag = () => {
 	dataFenom.params = paramsArr;
 	dataFenom.fenom = {
 		flagNoCache: flagNoCache,
-		template: templateTag,
+		template: templateTag || undefined,
 	};
 	dataFenom.modx = {
 		key: modxTagKey,
