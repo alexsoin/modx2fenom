@@ -4,13 +4,13 @@ import { Notify } from "notiflix/build/notiflix-notify-aio";
 import { DataFenom } from "@/data/types";
 
 defineProps<{
-	fenomOut: DataFenom,
+	fenomOut: DataFenom;
 }>();
 
 const { toClipboard } = useClipboard();
 
 const copy = async (str: string) => {
-	if(str.length === 0) return;
+	if (str.length === 0) return;
 	try {
 		await toClipboard(str);
 		Notify.info(`Скопировано`);
@@ -24,11 +24,8 @@ const copy = async (str: string) => {
 	<label class="flex flex-col text-white uppercase">
 		<span class="flex flex-row gap-4 justify-between items-end">
 			fenom:
-			<span
-				v-if="fenomOut.fenom?.template"
-				class="text-xs text-white lowercase font-normal"
-			>
-				({{ fenomOut.fenom?.template.name }})
+			<span class="text-xs text-white lowercase font-normal">
+				{{ fenomOut.fenom?.template?.name || "¯\\_(ツ)_/¯" }}
 			</span>
 		</span>
 		<textarea

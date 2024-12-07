@@ -5,6 +5,10 @@ export default [
 	{ name: "chunk", token: "$", template: "{'#NAME#' | chunk#PARAMS#}" },
 	{ name: "lexicon", token: "%", template: "{'#NAME#' | lexicon#PARAMS#}" },
 	{ name: "snippet", token: false, template: "{'#NAME#' | snippet#PARAMS#}" },
-	{ name: "resource/tv", token: "*", template: "{$_modx->resource.#NAME##PARAMS#}" },
+	{
+		name: "resource/tv",
+		token: "*",
+		template: "{$_modx->resource.#NAME##PARAMS#}",
+	},
 	{ name: "comment", token: "-", template: "{*#NAME##PARAMS#*}" },
 ];

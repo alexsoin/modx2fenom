@@ -63,7 +63,7 @@ const convertTag = () => {
 	const [ tagRaw, tagContent, flagNoCache ] = getMatch(inputTag.value, /^[\[]{2}(([!])?.*)[\]]{2}$/sg);
 	clearAll();
 
-	if(!tagContent) {
+	if (!tagContent) {
 		dataFenom.out = lang.value.error.undefinedValue;
 		return;
 	}
@@ -81,7 +81,7 @@ const convertTag = () => {
 		.map(i => ({ name: i[1], value: i[2]?.trim() }))
 		.filter(i => i.name) || [];
 	const paramsFenom = paramsArr
-		.map(i => `'${i.name}' => '${i.value || ""}'`)
+		.map((i) => `'${i.name}' => '${i.value || ""}'`)
 		.join(",\n\t");
 	const paramsFenomOut = paramsFenom ? ` : [\n\t${paramsFenom}\n]` : "";
 
@@ -89,10 +89,10 @@ const convertTag = () => {
 		? templateTag.template
 			.replaceAll("#NAME#", `${flagNoCache || ""}${tagName}`)
 			.replaceAll("#PARAMS#", paramsFenomOut || "")
-		: lang.value.error.error;
+		: null;
 
 	dataFenom.raw = tagRaw;
-	dataFenom.out = converter(result);
+	dataFenom.out = converter(result || inputTag.value);
 	dataFenom.name = tagName;
 	dataFenom.modifier = tagModifiers;
 	dataFenom.property = tagProperty;
@@ -105,8 +105,6 @@ const convertTag = () => {
 		key: modxTagKey,
 		params: rawParams,
 	};
-
-	if(!templateTag) Notify.failure(lang.value.error.emptyTemplate);
 };
 
 onMounted(() => {
@@ -139,7 +137,7 @@ watch(inputTag, () => convertTag());
 		/>
 		<v-debug
 			v-if="showDebug"
-			v-model:inputTag="inputTag"
+			v-model:input-tag="inputTag"
 			:tag="dataFenom"
 		/>
 		<div class="flex flex-col gap-5 justify-center items-center text-blue-300 text-center mt-8 mb-20">
