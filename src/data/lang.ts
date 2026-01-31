@@ -2,6 +2,12 @@ export default {
 	ru: {
 		desc: "Конвертер modx тегов в синтаксис fenom.",
 		copied: "Скопировано",
+		ui: {
+			inputTitle: "MODX (Ввод)",
+			outputTitle: "Fenom (Вывод)",
+			clear: "Очистить",
+			copy: "Копировать",
+		},
 		error: {
 			error: "Ошибка!",
 			undefinedValue: "Не разберу, что вы ввели :(",
@@ -19,6 +25,12 @@ export default {
 	en: {
 		desc: "Converter modx tags to fenom syntax.",
 		copied: "Copied",
+		ui: {
+			inputTitle: "MODX (Input)",
+			outputTitle: "Fenom (Output)",
+			clear: "Clear",
+			copy: "Copy",
+		},
 		error: {
 			error: "Error!",
 			undefinedValue: "I don't understand what you entered. :(",

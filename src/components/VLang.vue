@@ -27,36 +27,19 @@ onMounted(() => {
 </script>
 
 <template>
-	<div class="inline-flex flex-row items-center border rounded text-white border-white opacity-50">
-		<svg
-			class="h-6 w-6"
-			width="24"
-			height="24"
-			viewBox="0 0 24 24"
-			stroke-width="2"
-			stroke="currentColor"
-			fill="none"
-			stroke-linecap="round"
-			stroke-linejoin="round"
-		>
-			<path
-				stroke="none"
-				d="M0 0h24v24H0z"
-			/>
-			<path d="M5 7h7m-2 -2v2a5 8 0 0 1 -5 8m1 -4a7 4 0 0 0 6.7 4" />
-			<path d="M11 19l4 -9l4 9m-.9 -2h-6.2" />
-		</svg>
-		<select
-			v-model="inputText"
-			class="bg-transparent"
-		>
-			<option
-				v-for="langVal in listLangs"
-				:key="langVal"
-				:value="langVal"
-			>
-				{{ langVal.toUpperCase() }}
-			</option>
-		</select>
+	<div class="inline-flex flex-row items-center border rounded-lg overflow-hidden border-blue-500/30">
+        <button
+            v-for="langVal in listLangs"
+            :key="langVal"
+            @click="inputText = langVal"
+            class="px-3 py-1 text-sm font-semibold transition-colors uppercase"
+            :class="[
+                inputText === langVal 
+                    ? 'bg-blue-600 text-white' 
+                    : 'bg-blue-900/40 text-blue-200 hover:bg-blue-800'
+            ]"
+        >
+            {{ langVal }}
+        </button>
 	</div>
 </template>

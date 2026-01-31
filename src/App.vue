@@ -2,16 +2,16 @@
 import { ref, reactive, watch, onMounted, computed } from "vue";
 import useHotkey, { HotKey } from "vue3-hotkey";
 import { Notify } from "notiflix/build/notiflix-notify-aio";
-import templates from "@/data/templates";
 import ZencodLink from "@/components/ZencodLink.vue";
 import { DataFenom } from "@/data/types";
 import InputModx from "@/components/InputModx.vue";
 import OutputFenom from "@/components/OutputFenom.vue";
 import VDebug from "@/components/VDebug.vue";
 import VLang from "@/components/VLang.vue";
+import Logo from "@/components/ui/Logo.vue";
 import AppInfo from "@/components/AppInfo.vue";
 import langs from "@/data/lang";
-import converter from "@/composables/converter";
+import { parseTag } from "@/composables/parser";
 
 Notify.init({ position: "center-top" });
 
@@ -29,8 +29,6 @@ const dataFenom = reactive<DataFenom>({
 	fenom: null,
 	modx: null,
 });
-const errors = ref<Array<string>>([]);
-const infos = ref<Array<string>>([]);
 
 const hotkeys = ref<HotKey[]>([
 	{
@@ -44,9 +42,6 @@ const hotkeys = ref<HotKey[]>([
 useHotkey(hotkeys.value);
 
 const clearAll = () => {
-	errors.value = [];
-	infos.value = [];
-
 	dataFenom.raw = "";
 	dataFenom.out = "";
 	dataFenom.name = "";
@@ -57,54 +52,17 @@ const clearAll = () => {
 	dataFenom.modx = null;
 };
 
-const getMatch = (str: string, reg: RegExp) => Array.from(str.trim().replace(/[\r\n\t]+/g, "").matchAll(reg))[0] || [];
-
 const convertTag = () => {
-	const [ tagRaw, tagContent, flagNoCache ] = getMatch(inputTag.value, /^[\[]{2}(([!])?.*)[\]]{2}$/sg);
-	clearAll();
-
-	if (!tagContent) {
-		dataFenom.out = lang.value.error.undefinedValue;
-		return;
-	}
-
-	const [ preParams, rawParams ] = tagContent.split("?");
-	const [ , modxTagKey, tagName, tagProperty, tagModifiers ] = getMatch(preParams, /[!]?([-*$~%]?|[+]{1,2})?([-_a-zA-Z0-9\\.]*)(@[-_a-zA-Z0-9\\.]*)?(:.*)?/gs);
-
-	const templateTag = templates.find(i => i.token === modxTagKey) || (!!tagName && templates.find(i => i.name === "snippet") );
-
-	console.log((rawParams || "").trim().replace(/\s+/g, " ").replace(/`[\s]+&/g, "`&").replace(/[\s]?=[\s]?`/g, "=`"));
-
-
-	const paramsArr = (rawParams || "").trim().replace(/\s+/g, " ").replace(/`[\s]+&/g, "`&").replace(/[\s]?=[\s]?`/g, "=`").split("&")
-		.map(i => i.split(/([^=\s]+)=`(.*)`$/g))
-		.map(i => ({ name: i[1], value: i[2]?.trim() }))
-		.filter(i => i.name) || [];
-	const paramsFenom = paramsArr
-		.map((i) => `'${i.name}' => '${i.value || ""}'`)
-		.join(",\n\t");
-	const paramsFenomOut = paramsFenom ? ` : [\n\t${paramsFenom}\n]` : "";
-
-	const result = templateTag
-		? templateTag.template
-			.replaceAll("#NAME#", `${flagNoCache || ""}${tagName}`)
-			.replaceAll("#PARAMS#", paramsFenomOut || "")
-		: null;
-
-	dataFenom.raw = tagRaw;
-	dataFenom.out = converter(result || inputTag.value);
-	dataFenom.name = tagName;
-	dataFenom.modifier = tagModifiers;
-	dataFenom.property = tagProperty;
-	dataFenom.params = paramsArr;
-	dataFenom.fenom = {
-		flagNoCache: flagNoCache,
-		template: templateTag || undefined,
-	};
-	dataFenom.modx = {
-		key: modxTagKey,
-		params: rawParams,
-	};
+    // If input is empty, just clear everything
+    if (!inputTag.value.trim()) {
+        clearAll();
+        return;
+    }
+    
+	const result = parseTag(inputTag.value, lang.value);
+    
+    // Update reactive object
+    Object.assign(dataFenom, result);
 };
 
 onMounted(() => {
@@ -119,12 +77,12 @@ watch(inputTag, () => convertTag());
 		<div class="mt-8 md:mt-20 mb-14">
 			<h1 class="text-4xl flex flex-row gap-3 uppercase items-center justify-center text-white select-none font-bold">
 				<zencod-link />
-				<span>modx → fenom</span>
+				<logo />
 			</h1>
 		</div>
 		<div class="flex flex-col md:flex-row gap-12 md:gap-5 py-3 w-full">
 			<div class="flex-1">
-				<input-modx v-model="inputTag" />
+				<input-modx v-model="inputTag" :label-clear="lang.ui.clear" />
 			</div>
 			<div class="flex-1 relative">
 				<output-fenom :fenom-out="dataFenom" />

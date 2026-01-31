@@ -2,12 +2,28 @@
 import useClipboard from "vue-clipboard3";
 import { Notify } from "notiflix/build/notiflix-notify-aio";
 import { DataFenom } from "@/data/types";
+import hljs from "highlight.js/lib/core";
+import fenom from "@/data/highlight-fenom";
+import "highlight.js/styles/atom-one-dark-reasonable.css";
+import { computed } from "vue";
 
-defineProps<{
+hljs.registerLanguage("fenom", fenom);
+
+const props = defineProps<{
 	fenomOut: DataFenom;
 }>();
 
 const { toClipboard } = useClipboard();
+
+const highlightedCode = computed(() => {
+	if (!props.fenomOut.out) return "";
+	try {
+		return hljs.highlight(props.fenomOut.out, { language: "fenom" }).value;
+	} catch (e) {
+		console.warn("Highlight error:", e);
+		return props.fenomOut.out;
+	}
+});
 
 const copy = async (str: string) => {
 	if (str.length === 0) return;
@@ -21,20 +37,19 @@ const copy = async (str: string) => {
 </script>
 
 <template>
-	<label class="flex flex-col text-white uppercase">
-		<span class="flex flex-row gap-4 justify-between items-end">
-			fenom:
-			<span class="text-xs text-white lowercase font-normal">
+	<label class="flex flex-col text-white relative">
+		<span class="flex flex-row gap-4 justify-between items-end mb-1 ml-1">
+			<span class="uppercase font-bold opacity-80 text-sm">fenom:</span>
+			<span class="text-xs text-white/60 lowercase font-normal">
 				{{ fenomOut.fenom?.template?.name || "¯\\_(ツ)_/¯" }}
 			</span>
 		</span>
-		<textarea
-			:value="fenomOut.out"
-			cols="30"
-			rows="10"
-			class="mt-2 p-2 bg-blue-900 border border-white shadow-lg rounded"
-			disabled
-		/>
+		<pre
+			class="mt-2 p-4 bg-blue-900 border border-white/20 shadow-lg rounded overflow-auto h-64 w-full whitespace-pre-wrap break-all leading-relaxed font-mono"
+		><code
+			class="hljs language-fenom"
+			v-html="highlightedCode"
+		/></pre>
 	</label>
 	<button
 		class="absolute bottom-1 right-2 flex flex-1 gap-2 justify-center p-2 rounded transition-opacity bg-gray-700 text-white mb-2 opacity-30 hover:opacity-100 hover:bg-gray-200 hover:text-gray-700"
@@ -52,3 +67,11 @@ const copy = async (str: string) => {
 		</svg>
 	</button>
 </template>
+
+<style>
+/* Override highlight.js background to use our transparent/blue background */
+.hljs {
+	background: transparent !important;
+	padding: 0 !important; /* Remove hljs padding to avoid double padding if set on pre */
+}
+</style>
